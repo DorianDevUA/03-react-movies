@@ -9,17 +9,20 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import MovieModal from '../MovieModal/MovieModal';
 
 const App = () => {
-  const [movies, setMovies] = useState<Movie[] | null>(null);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [movie, setMovie] = useState<Movie | null>(null);
+  // Cтан відкриття модального вікна
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Cтан індикатора завантаження
   const [isLoading, setIsLoading] = useState(false);
+  // Стан помилки HTTP-запиту
   const [isHttpError, setIsHttpError] = useState(false);
 
   const handleSearch = async (query: string) => {
     try {
       setIsLoading(true);
       setIsHttpError(false);
-      setMovies(null);
+      setMovies([]);
 
       const movieList = await fetchMovies(query);
 
@@ -56,7 +59,9 @@ const App = () => {
       ) : isHttpError ? (
         <ErrorMessage />
       ) : (
-        movies && <MovieGrid movies={movies} onSelect={handleSelectMovie} />
+        movies.length > 0 && (
+          <MovieGrid movies={movies} onSelect={handleSelectMovie} />
+        )
       )}
 
       {isModalOpen && <MovieModal movie={movie} onClose={onModalClose} />}
